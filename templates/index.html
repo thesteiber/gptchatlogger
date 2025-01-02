@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Logger</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .status {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .status.active {
+            color: green;
+        }
+        .status.inactive {
+            color: red;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .logs {
+            margin-top: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="status active">● Active</div>
+        <button onclick="viewLogs()">View Logs</button>
+        <div class="logs" id="logs"></div>
+    </div>
+
+    <script>
+        async function viewLogs() {
+            try {
+                const response = await fetch("/get-logs");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch logs");
+                }
+                const logs = await response.json();
+                const logsDiv = document.getElementById("logs");
+                logsDiv.innerHTML = "<h3>Chat Logs:</h3>";
+                logs.forEach(log => {
+                    logsDiv.innerHTML += `
+                        <p><strong>Timestamp:</strong> ${log.timestamp}</p>
+                        <p><strong>User Input:</strong> ${log.user_input}</p>
+                        <p><strong>GPT Response:</strong> ${log.gpt_response}</p>
+                        <hr>
+                    `;
+                });
+            } catch (error) {
+                console.error(error);
+                alert("Failed to fetch logs");
+            }
+        }
+    </script>
+</body>
+</html>
