@@ -3,8 +3,7 @@ import os
 
 app = Flask(__name__)
 
-# Hardcoded API key (for demonstration purposes)
-API_KEY = "your-secret-api-key"
+API_KEY = os.getenv("API_KEY")
 
 # File to store chat logs
 CHAT_LOG_FILE = "chat_logs.json"
