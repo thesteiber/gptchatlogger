@@ -10,15 +10,25 @@ CHAT_LOG_FILE = "chat_logs.json"
 
 def load_chat_logs():
     """Load existing chat logs from the file."""
-    if os.path.exists(CHAT_LOG_FILE):
-        with open(CHAT_LOG_FILE, "r") as file:
-            return json.load(file)
-    return []
+    try:
+        if os.path.exists(CHAT_LOG_FILE):
+            with open(CHAT_LOG_FILE, "r") as file:
+                return json.load(file)
+        return []
+    except json.JSONDecodeError as e:
+        print(f"Invalid JSON in chat logs: {e}")
+        return []
+    except Exception as e:
+        print(f"Error loading chat logs: {e}")
+        return []
 
 def save_chat_logs(logs):
     """Save chat logs to the file."""
-    with open(CHAT_LOG_FILE, "w") as file:
-        json.dump(logs, file, indent=2)
+    try:
+        with open(CHAT_LOG_FILE, "w") as file:
+            json.dump(logs, file, indent=2)
+    except Exception as e:
+        print(f"Error saving chat logs: {e}")
 
 @app.route("/")
 def index():
@@ -46,9 +56,14 @@ def log_chat():
 @app.route("/get-logs", methods=["GET"])
 def get_logs():
     """Endpoint to retrieve chat logs."""
-    # Retrieve logs
-    chat_logs = load_chat_logs()
-    return jsonify(chat_logs), 200
+    try:
+        print("Fetching logs...")
+        chat_logs = load_chat_logs()
+        print(f"Logs fetched: {chat_logs}")
+        return jsonify(chat_logs), 200
+    except Exception as e:
+        print(f"Error in /get-logs: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
