@@ -6,7 +6,7 @@ app = Flask(__name__)
 def authenticate(request):
     """Check if the request contains a valid API key."""
     auth_header = request.headers.get("Authorization")
-    if auth_header and auth_header == f"Bearer {API_KEY}":
+    if auth_header and auth_header == f"Bearer {API_KEY}": # type: ignore
         return True
     return False
 
