@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 # Fetch the API key from an environment variable
 API_KEY = os.getenv("API_KEY")
-                    
+
 # File to store chat logs
 CHAT_LOG_FILE = "chat_logs.json"
 
@@ -41,6 +41,10 @@ def index():
 @app.route("/log-chat", methods=["POST"])
 def log_chat():
     """Endpoint to receive and log chat data."""
+    # Authenticate the request
+    if not authenticate(request):
+        return jsonify({"error": "Unauthorized: Invalid or missing API key"}), 401
+
     data = request.json
     if not data or "user_input" not in data or "response" not in data or "thought_process" not in data:
         return jsonify({"error": "Invalid data"}), 400
@@ -60,6 +64,10 @@ def log_chat():
 @app.route("/get-logs", methods=["GET"])
 def get_logs():
     """Endpoint to retrieve chat logs."""
+    # Authenticate the request
+    if not authenticate(request):
+        return jsonify({"error": "Unauthorized: Invalid or missing API key"}), 401
+
     try:
         print("Fetching logs...")
         chat_logs = load_chat_logs()
