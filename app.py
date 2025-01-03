@@ -5,6 +5,9 @@ import json
 
 app = Flask(__name__)
 
+# Fetch the API key from an environment variable
+API_KEY = os.getenv("API_KEY")
+                    
 # File to store chat logs
 CHAT_LOG_FILE = "chat_logs.json"
 
@@ -65,6 +68,13 @@ def get_logs():
     except Exception as e:
         print(f"Error in /get-logs: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
+
+def authenticate(request):
+    """Check if the request contains a valid API key."""
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header == f"Bearer {API_KEY}":
+        return True
+    return False
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
