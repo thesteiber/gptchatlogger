@@ -64,10 +64,6 @@ def log_chat():
 @app.route("/get-logs", methods=["GET"])
 def get_logs():
     """Endpoint to retrieve chat logs."""
-    # Authenticate the request
-    if not authenticate(request):
-        return jsonify({"error": "Unauthorized: Invalid or missing API key"}), 401
-
     try:
         print("Fetching logs...")
         chat_logs = load_chat_logs()
