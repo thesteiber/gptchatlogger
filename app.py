@@ -47,7 +47,8 @@ def log_chat():
     chat_logs.append({
         "timestamp": datetime.now().isoformat(),
         "user_input": data["user_input"],
-        "gpt_response": data["gpt_response"]
+        "response": data["response"],
+        "thought_process": data["thought_process"]
     })
     save_chat_logs(chat_logs)
 
